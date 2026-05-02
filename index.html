@@ -386,28 +386,23 @@
         async function loadSlides() {
             try {
                 const response = await fetch('/api/data');
-                if (!response.ok) throw new Error('Server not responding');
+                if (!response.ok) throw new Error('Database not responding');
                 allData = await response.json();
                 
                 // Update Stats
                 document.getElementById('totalRecords').innerText = allData.length;
-                const villages = new Set(allData.map(item => item.villageOrPanchayat || item.village));
+                const villages = new Set(allData.map(item => item.villageOrPanchayat));
                 document.getElementById('villageCount').innerText = villages.size;
 
                 if (allData.length === 0) {
-                    wrapper.innerHTML = '<div class="empty-state"><p>No data in CSV yet. Be the first to contribute!</p></div>';
+                    wrapper.innerHTML = '<div class="empty-state"><p>No data in Cloud Database yet. Start contributing!</p></div>';
                     return;
                 }
 
                 renderData(allData);
             } catch (error) {
-                console.warn('CSV Server not running, falling back to local storage');
-                allData = JSON.parse(localStorage.getItem('ngoData') || '[]');
-                if (allData.length === 0) {
-                    wrapper.innerHTML = '<div class="empty-state"><p>CSV Server is offline. Please start server.js to enable file storage.</p></div>';
-                    return;
-                }
-                renderData(allData);
+                console.error('Database connection error:', error);
+                wrapper.innerHTML = '<div class="empty-state"><p style="color: #ef4444;">⚠️ Unable to connect to Cloud Database. Please check your internet connection or server status.</p></div>';
             }
         }
 

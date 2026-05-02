@@ -485,13 +485,8 @@
                     body: JSON.stringify(newData)
                 });
 
-                if (!response.ok) throw new Error('Server connection failed');
+                if (!response.ok) throw new Error('Cloud storage failed');
 
-                // Also save to localStorage as backup
-                let existingData = JSON.parse(localStorage.getItem('ngoData') || '[]');
-                if (editIndex !== null) existingData[editIndex] = newData;
-                else existingData.push(newData);
-                localStorage.setItem('ngoData', JSON.stringify(existingData));
 
                 // Show success and hide form elements
                 document.getElementById('success').style.display = 'block';
@@ -508,7 +503,7 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
                 console.error(error);
-                alert('Error: Could not connect to CSV server. Please make sure server.js is running.');
+                alert('Error: Could not connect to Cloud Database. Please check your internet or server status.');
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = '1';
