@@ -346,6 +346,16 @@
                 <h4>Villages Covered</h4>
                 <div class="value" id="villageCount">0</div>
             </div>
+
+            <!-- Offline Sync Status -->
+            <div id="syncStatusCard" class="stat-card" style="border-left: 4px solid #f59e0b; display: none;">
+                <h4>Offline Buffer</h4>
+                <div style="color: #b45309; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                    <span id="pendingCount">0</span> Records Pending
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-muted);">These will upload automatically when internet returns.</p>
+            </div>
+
             <div class="stat-card" style="border-left: 4px solid var(--secondary);">
                 <h4>System Status</h4>
                 <div style="color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
@@ -355,15 +365,6 @@
                 <a href="/api/download" class="btn btn-outline" style="width: 100%; font-size: 0.8rem;">
                     <span>📥</span> Download Records (CSV)
                 </a>
-            </div>
-
-            <!-- Offline Sync Status -->
-            <div id="syncStatusCard" class="stat-card" style="border-left: 4px solid #f59e0b; display: none;">
-                <h4>Offline Buffer</h4>
-                <div style="color: #b45309; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                    <span id="pendingCount">0</span> Records Pending
-                </div>
-                <p style="font-size: 0.75rem; color: var(--text-muted);">These will upload automatically when internet returns.</p>
             </div>
         </aside>
 
