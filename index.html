@@ -329,11 +329,16 @@
 </head>
 
 <body>
-    <nav>
-        <div class="logo">
-            <span>🌿</span> VillageConnect
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;">
+        <div class="logo" style="display: flex; flex-direction: column; gap: 2px;">
+            <div style="font-weight: 800; font-size: 1.2rem; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                <span>🌿</span> Village Insights Dashboard
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400; padding-left: 28px;">VillageConnect Portal</div>
         </div>
-        <a href="data.html" class="add-data-btn">Add Data</a>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <a href="data.html" class="btn btn-primary" style="padding: 8px 20px;">+ Add Village Data</a>
+        </div>
     </nav>
 
     <main class="dashboard-layout">
@@ -369,11 +374,6 @@
         </aside>
 
         <div class="main-content">
-            <section class="hero" style="padding: 40px; margin-bottom: 30px; border-radius: var(--radius); border: 1px solid var(--border);">
-                <h1>Village Insights Dashboard</h1>
-                <p>Tracking progress and empowering communities through real-time data collection across rural sectors.</p>
-            </section>
-
             <section class="slider-container" style="padding: 0;">
                 <div class="section-header" style="flex-wrap: wrap; gap: 20px;">
                     <div>
