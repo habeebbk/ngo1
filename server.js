@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
 
+// Deployment Update: 2026-05-02
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = "mongodb+srv://habeeb:dqfrt9MRTzPGHrtB@cluster0.fh9s8.mongodb.net/ngo1?appName=Cluster0";
