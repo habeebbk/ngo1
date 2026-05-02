@@ -463,12 +463,12 @@
 
             const formData = new FormData(e.target);
             const newData = Object.fromEntries(formData.entries());
+            newData.timestamp = new Date().toISOString(); // Ensure timestamp is set before potential offline save
 
             // UI Feedback
             const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span>Saving to Cloud...</span>';
+            submitBtn.innerHTML = '<span>Processing...</span>';
             submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
 
             try {
                 let url = '/api/data';
@@ -487,8 +487,7 @@
 
                 if (!response.ok) throw new Error('Cloud storage failed');
 
-
-                // Show success and hide form elements
+                // Success UI
                 document.getElementById('success').style.display = 'block';
                 document.querySelector('.card').style.display = 'none';
                 document.querySelector('.header').style.display = 'none'; 
@@ -501,14 +500,74 @@
                 document.querySelector('.container').appendChild(homeBtn);
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+
             } catch (error) {
-                console.error(error);
-                alert('Error: Could not connect to Cloud Database. Please check your internet or server status.');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
+                console.warn('Network issue, saving to offline buffer:', error);
+                
+                // OFFLINE SAVE
+                let offlineData = JSON.parse(localStorage.getItem('offlineBuffer') || '[]');
+                offlineData.push(newData);
+                localStorage.setItem('offlineBuffer', JSON.stringify(offlineData));
+
+                // Success UI (with Offline Warning)
+                document.getElementById('success').style.display = 'block';
+                document.getElementById('success').innerHTML = `
+                    <div style="font-size: 50px; margin-bottom: 20px;">💾</div>
+                    <h2 style="color: #065f46;">Saved Offline!</h2>
+                    <p style="color: #047857; margin-bottom: 20px;">
+                        No internet connection. Data is saved safely on this device.<br>
+                        <b>It will upload automatically when your internet returns.</b>
+                    </p>
+                `;
+                document.querySelector('.card').style.display = 'none';
+                document.querySelector('.header').style.display = 'none';
+
+                const homeBtn = document.createElement('a');
+                homeBtn.href = 'index.html';
+                homeBtn.className = 'btn btn-primary';
+                homeBtn.style.marginTop = '20px';
+                homeBtn.innerHTML = '<span>🏠</span> Return to Dashboard';
+                document.querySelector('.container').appendChild(homeBtn);
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
+
+        // BACKGROUND SYNC LOGIC
+        async function syncOfflineData() {
+            let offlineData = JSON.parse(localStorage.getItem('offlineBuffer') || '[]');
+            if (offlineData.length === 0) return;
+
+            console.log('Attempting to sync ' + offlineData.length + ' offline records...');
+
+            for (let i = 0; i < offlineData.length; i++) {
+                try {
+                    const response = await fetch('/api/data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(offlineData[i])
+                    });
+
+                    if (response.ok) {
+                        // Remove synced item
+                        offlineData.splice(i, 1);
+                        localStorage.setItem('offlineBuffer', JSON.stringify(offlineData));
+                        i--; // Adjust index after splice
+                        console.log('Synced 1 record to cloud.');
+                    }
+                } catch (err) {
+                    console.warn('Sync failed, will retry later.');
+                    break; // Stop trying if we are still offline
+                }
+            }
+        }
+
+        // Check for sync every 30 seconds
+        setInterval(syncOfflineData, 30000);
+        // Also check on load
+        window.addEventListener('load', syncOfflineData);
+        // Also check when internet comes back
+        window.addEventListener('online', syncOfflineData);
     </script>
 </body>
 

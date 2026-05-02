@@ -341,6 +341,15 @@
                     <span>📥</span> Download Records (CSV)
                 </a>
             </div>
+
+            <!-- Offline Sync Status -->
+            <div id="syncStatusCard" class="stat-card" style="border-left: 4px solid #f59e0b; display: none;">
+                <h4>Offline Buffer</h4>
+                <div style="color: #b45309; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                    <span id="pendingCount">0</span> Records Pending
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-muted);">These will upload automatically when internet returns.</p>
+            </div>
         </aside>
 
         <div class="main-content">
@@ -489,6 +498,49 @@
 
         // Load slides on init
         loadSlides();
+
+        // OFFLINE SYNC LOGIC FOR DASHBOARD
+        function updateSyncStatus() {
+            const offlineData = JSON.parse(localStorage.getItem('offlineBuffer') || '[]');
+            const card = document.getElementById('syncStatusCard');
+            const countSpan = document.getElementById('pendingCount');
+
+            if (offlineData.length > 0) {
+                card.style.display = 'block';
+                countSpan.innerText = offlineData.length;
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+        async function backgroundSync() {
+            let offlineData = JSON.parse(localStorage.getItem('offlineBuffer') || '[]');
+            if (offlineData.length === 0) {
+                updateSyncStatus();
+                return;
+            }
+
+            for (let i = 0; i < offlineData.length; i++) {
+                try {
+                    const response = await fetch('/api/data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(offlineData[i])
+                    });
+                    if (response.ok) {
+                        offlineData.splice(i, 1);
+                        localStorage.setItem('offlineBuffer', JSON.stringify(offlineData));
+                        i--;
+                        loadSlides(); // Refresh dashboard if something synced
+                    }
+                } catch (e) { break; }
+            }
+            updateSyncStatus();
+        }
+
+        setInterval(backgroundSync, 30000);
+        window.addEventListener('online', backgroundSync);
+        updateSyncStatus();
     </script>
 </body>
 
