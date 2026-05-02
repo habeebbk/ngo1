@@ -375,37 +375,19 @@
         </aside>
 
         <div class="main-content">
-            <section class="slider-container" style="padding: 0;">
-                <div class="section-header" style="flex-wrap: wrap; gap: 20px;">
+            <!-- Table View Section -->
+            <section>
+                <div class="section-header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
                     <div>
-                        <h2>Recent Contributions</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">View and manage village data</p>
+                        <h2>Detailed Records View</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Tabular data representation for easy management</p>
                     </div>
-                    <div style="flex: 1; min-width: 250px; position: relative;">
+                    <div style="flex: 1; min-width: 300px; position: relative;">
                         <input type="text" id="searchInput" placeholder="Search by name or village..."
                             style="width: 100%; padding: 12px 15px 12px 40px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.9rem;">
                         <span
                             style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);">🔍</span>
                     </div>
-                    <div class="slider-controls" style="display: flex; gap: 10px;">
-                        <button class="btn btn-outline btn-icon" id="prevBtn">←</button>
-                        <button class="btn btn-outline btn-icon" id="nextBtn">→</button>
-                    </div>
-                </div>
-
-                <div class="slides-wrapper" id="slidesWrapper">
-                    <!-- Slides will be injected here -->
-                    <div class="empty-state">
-                        <p>No data collected yet. Be the first to contribute!</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Table View Section -->
-            <section style="margin-top: 50px;">
-                <div class="section-header" style="margin-bottom: 20px;">
-                    <h2>Detailed Records View</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Tabular data representation for easy management</p>
                 </div>
                 
                 <div style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;">
@@ -443,9 +425,6 @@
     </main>
 
     <script>
-        const wrapper = document.getElementById('slidesWrapper');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
         const searchInput = document.getElementById('searchInput');
         let allData = [];
 
@@ -501,52 +480,17 @@
             const tableBody = document.getElementById('tableBody');
             
             if (data.length === 0) {
-                wrapper.innerHTML = '<div class="empty-state"><p>No matching records found.</p></div>';
                 tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">No records available</td></tr>';
                 return;
             }
 
-            wrapper.innerHTML = '';
             tableBody.innerHTML = '';
 
             [...data].reverse().forEach((item, index) => {
                 const dateObj = item.timestamp ? new Date(item.timestamp) : null;
                 const formattedDate = dateObj ? dateObj.toLocaleDateString() : 'N/A';
 
-                // Render Card (for Mobile/Slider)
-                const card = document.createElement('div');
-                card.className = 'slide-card';
-                card.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
-                        <h3>${item.fullName}</h3>
-                        <div style="display: flex; gap: 8px;">
-                            <a href="data.html?edit=${item._id}" class="btn btn-outline btn-icon" style="font-size: 0.8rem;" title="Edit Data">✏️</a>
-                            <button onclick="deleteRecord('${item._id}')" class="btn btn-danger-outline btn-icon" style="font-size: 0.8rem;" title="Delete Data">🗑️</button>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 5px;">
-                        <span>🕒</span> ${formattedDate}
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Village</span>
-                        <span class="value">${item.villageOrPanchayat || item.village || 'N/A'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Occupation</span>
-                        <span class="value">${item.occupation}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Income</span>
-                        <span class="value">${item.incomeRange || item.income}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Family Size</span>
-                        <span class="value">${item.numberOfFamilyMembers || item.family} members</span>
-                    </div>
-                `;
-                wrapper.appendChild(card);
-
-                // Render Table Row (for Desktop/Admin)
+                // Render Table Row (Primary View)
                 const row = document.createElement('tr');
                 row.style.borderBottom = '1px solid #f1f5f9';
                 row.innerHTML = `
@@ -565,14 +509,6 @@
                 tableBody.appendChild(row);
             });
         }
-
-        prevBtn.addEventListener('click', () => {
-            wrapper.scrollBy({ left: -400, behavior: 'smooth' });
-        });
-
-        nextBtn.addEventListener('click', () => {
-            wrapper.scrollBy({ left: 400, behavior: 'smooth' });
-        });
 
         // Load slides on init
         loadSlides();
