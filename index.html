@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Village Connect | NGO Portal</title>
+    <!-- Modern Typography -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --secondary: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-data-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px 0 rgba(34, 197, 94, 0.39);
+        }
+
+        .add-data-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.23);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 40px;
+            text-align: center;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* Slider Section */
+        .slider-container {
+            padding: 60px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            color: var(--text-main);
+        }
+
+        .slides-wrapper {
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+        }
+
+        .slide-card {
+            min-width: 320px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .slide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+            border-radius: var(--radius) 0 0 var(--radius);
+        }
+
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .slide-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Sidebar Style */
+        .dashboard-layout {
+            display: flex;
+            gap: 40px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .side-panel {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            .side-panel {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        .slide-card .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .slide-card .label {
+            color: var(--text-muted);
+        }
+
+        .slide-card .value {
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 2px dashed var(--border);
+            width: 100%;
+        }
+
+        /* Controls */
+        .slider-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border: 1px solid transparent;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(5, 150, 105, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: var(--text-main);
+            border-color: var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--bg);
+        }
+
+        .btn-danger-outline {
+            background: #fff;
+            color: #ef4444;
+            border-color: var(--border);
+        }
+
+        .btn-danger-outline:hover {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            nav {
+                padding: 15px 20px;
+            }
+            .slider-container {
+                padding: 40px 20px;
+            }
+            .slide-card {
+                min-width: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <span>🌿</span> VillageConnect
+        </div>
+        <a href="data.html" class="add-data-btn">Add Data</a>
+    </nav>
+
+    <main class="dashboard-layout">
+        <aside class="side-panel">
+            <div class="stat-card">
+                <h4>Total Records</h4>
+                <div class="value" id="totalRecords">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Villages Covered</h4>
+                <div class="value" id="villageCount">0</div>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--secondary);">
+                <h4>System Status</h4>
+                <div style="color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <span style="width: 8px; height: 8px; background: var(--primary); border-radius: 50%;"></span>
+                    Operational
+                </div>
+                <a href="http://localhost:3000/api/download" class="btn btn-outline" style="width: 100%; font-size: 0.8rem;">
+                    <span>📥</span> Download Records (CSV)
+                </a>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <section class="hero" style="padding: 40px; margin-bottom: 30px; border-radius: var(--radius); border: 1px solid var(--border);">
+                <h1>Village Insights Dashboard</h1>
+                <p>Tracking progress and empowering communities through real-time data collection across rural sectors.</p>
+            </section>
+
+            <section class="slider-container" style="padding: 0;">
+                <div class="section-header" style="flex-wrap: wrap; gap: 20px;">
+                    <div>
+                        <h2>Recent Contributions</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">View and manage village data</p>
+                    </div>
+                    <div style="flex: 1; min-width: 250px; position: relative;">
+                        <input type="text" id="searchInput" placeholder="Search by name or village..." 
+                            style="width: 100%; padding: 12px 15px 12px 40px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.9rem;">
+                        <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);">🔍</span>
+                    </div>
+                    <div class="slider-controls" style="display: flex; gap: 10px;">
+                        <button class="btn btn-outline btn-icon" id="prevBtn">←</button>
+                        <button class="btn btn-outline btn-icon" id="nextBtn">→</button>
+                    </div>
+                </div>
+
+                <div class="slides-wrapper" id="slidesWrapper">
+                    <!-- Slides will be injected here -->
+                    <div class="empty-state">
+                        <p>No data collected yet. Be the first to contribute!</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const wrapper = document.getElementById('slidesWrapper');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const searchInput = document.getElementById('searchInput');
+        let allData = [];
+
+        async function loadSlides() {
+            try {
+                const response = await fetch('http://localhost:3000/api/data');
+                if (!response.ok) throw new Error('Server not responding');
+                allData = await response.json();
+                
+                // Update Stats
+                document.getElementById('totalRecords').innerText = allData.length;
+                const villages = new Set(allData.map(item => item.villageOrPanchayat || item.village));
+                document.getElementById('villageCount').innerText = villages.size;
+
+                if (allData.length === 0) {
+                    wrapper.innerHTML = '<div class="empty-state"><p>No data in CSV yet. Be the first to contribute!</p></div>';
+                    return;
+                }
+
+                renderData(allData);
+            } catch (error) {
+                console.warn('CSV Server not running, falling back to local storage');
+                allData = JSON.parse(localStorage.getItem('ngoData') || '[]');
+                if (allData.length === 0) {
+                    wrapper.innerHTML = '<div class="empty-state"><p>CSV Server is offline. Please start server.js to enable file storage.</p></div>';
+                    return;
+                }
+                renderData(allData);
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allData.filter(item => 
+                (item.fullName && item.fullName.toLowerCase().includes(term)) || 
+                (item.villageOrPanchayat && item.villageOrPanchayat.toLowerCase().includes(term)) ||
+                (item.village && item.village.toLowerCase().includes(term))
+            );
+            renderData(filtered);
+        });
+
+        async function deleteRecord(index) {
+            if (!confirm('Are you sure you want to delete this record? This will remove it from the CSV file.')) return;
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/data/${index}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) throw new Error('Delete failed');
+                
+                // Refresh data
+                loadSlides();
+            } catch (error) {
+                console.error(error);
+                alert('Error: Could not delete from CSV server.');
+            }
+        }
+
+        function renderData(data) {
+            if (data.length === 0) {
+                wrapper.innerHTML = '<div class="empty-state"><p>No matching records found.</p></div>';
+                return;
+            }
+
+            wrapper.innerHTML = '';
+            [...data].reverse().forEach((item, index) => {
+                const actualIndex = data.length - 1 - index;
+                const dateObj = item.timestamp ? new Date(item.timestamp) : null;
+                const formattedDate = dateObj ? dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'No date';
+
+                const card = document.createElement('div');
+                card.className = 'slide-card';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
+                        <h3>${item.fullName}</h3>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="data.html?edit=${actualIndex}" class="control-btn" style="width: 35px; height: 35px; font-size: 0.8rem; text-decoration: none;" title="Edit Data">✏️</a>
+                            <button onclick="deleteRecord(${actualIndex})" class="control-btn" style="width: 35px; height: 35px; font-size: 0.8rem; color: #ef4444;" title="Delete Data">🗑️</button>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 5px;">
+                        <span>🕒</span> ${formattedDate}
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Village</span>
+                        <span class="value">${item.villageOrPanchayat || item.village || 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Occupation</span>
+                        <span class="value">${item.occupation}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Income</span>
+                        <span class="value">${item.incomeRange || item.income}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Family Size</span>
+                        <span class="value">${item.numberOfFamilyMembers || item.family} members</span>
+                    </div>
+                `;
+                wrapper.appendChild(card);
+            });
+        }
+
+        prevBtn.addEventListener('click', () => {
+            wrapper.scrollBy({ left: -400, behavior: 'smooth' });
+        });
+
+        nextBtn.addEventListener('click', () => {
+            wrapper.scrollBy({ left: 400, behavior: 'smooth' });
+        });
+
+        // Load slides on init
+        loadSlides();
+    </script>
+</body>
+
+</html>

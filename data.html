@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Village Data Collection</title>
+    <!-- Modern Typography -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --secondary: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 0;
+            background-image: none;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        nav {
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            background: #ffffff;
+            color: var(--text-main);
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 640px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-main);
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+            color: var(--text-main);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 640px) {
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border: 1px solid transparent;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: var(--text-main);
+            border-color: var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--bg);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .success-message {
+            display: none;
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 24px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+            border: 1px solid #a7f3d0;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <span>🌿</span> VillageConnect
+        </div>
+        <a href="index.html" class="back-btn">
+            <span>🏠</span> Back to Dashboard
+        </a>
+    </nav>
+    <div class="container">
+        <div class="header">
+            <h1>Village Data Portal</h1>
+            <p>Empowering rural communities through structured data collection</p>
+        </div>
+
+        <div id="success" class="success-message">
+            ✓ Data has been successfully collected and saved!
+        </div>
+
+        <div class="card">
+            <form id="ngoForm">
+                <!-- Progress Bar -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 30px; position: relative;">
+                    <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: var(--bg); z-index: 1;"></div>
+                    <div id="progressLine" style="position: absolute; top: 50%; left: 0; width: 0%; height: 2px; background: var(--primary); z-index: 2; transition: width 0.3s ease;"></div>
+                    <div class="step-indicator active" data-step="1" style="z-index: 3; width: 35px; height: 35px; background: #fff; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary);">1</div>
+                    <div class="step-indicator" data-step="2" style="z-index: 3; width: 35px; height: 35px; background: #fff; border: 2px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-muted);">2</div>
+                    <div class="step-indicator" data-step="3" style="z-index: 3; width: 35px; height: 35px; background: #fff; border: 2px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-muted);">3</div>
+                </div>
+
+                <!-- Step 1: Personal Information -->
+                <div class="form-step active" id="step1">
+                    <div class="section-title">
+                        <span>👤</span> Step 1: Personal Information
+                    </div>
+                    <div class="grid">
+                        <div class="form-group full-width">
+                            <label for="fullName">Full Name of Respondent</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" placeholder="Age" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button type="button" class="submit-btn" style="width: auto; padding: 12px 30px;" onclick="nextStep(2)">Next Step →</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Location Details -->
+                <div class="form-step" id="step2" style="display: none;">
+                    <div class="section-title">
+                        <span>📍</span> Step 2: Location Details
+                    </div>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="villageOrPanchayat">Village / Panchayat</label>
+                            <input type="text" id="villageOrPanchayat" name="villageOrPanchayat" placeholder="Village name"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="wardNumber">Ward Number</label>
+                            <input type="text" id="wardNumber" name="wardNumber" placeholder="Ward #" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="houseNameOrNumber">House Name / Number</label>
+                            <input type="text" id="houseNameOrNumber" name="houseNameOrNumber"
+                                placeholder="Residential details" required>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-outline" onclick="nextStep(1)">← Back</button>
+                        <button type="button" class="btn btn-primary" style="padding: 12px 30px;" onclick="nextStep(3)">Next Step →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Socio-Economic Data -->
+                <div class="form-step" id="step3" style="display: none;">
+                    <div class="section-title">
+                        <span>📊</span> Step 3: Socio-Economic Data
+                    </div>
+                    <div class="grid">
+                        <div class="form-group full-width">
+                            <label for="occupation">Primary Occupation</label>
+                            <input type="text" id="occupation" name="occupation" placeholder="e.g. Farming, Teacher"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="incomeRange">Monthly Income Range</label>
+                            <select id="incomeRange" name="incomeRange" required>
+                                <option value="">Select Range</option>
+                                <option value="low">Below ₹5,000</option>
+                                <option value="medium">₹5,000 - ₹30,000</option>
+                                <option value="high">Above ₹30,000</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="educationLevel">Education Level</label>
+                            <select id="educationLevel" name="educationLevel" required>
+                                <option value="">Select Education</option>
+                                <option value="None">No Formal Education</option>
+                                <option value="Primary">Primary School</option>
+                                <option value="HighSchool">High School</option>
+                                <option value="Graduate">Graduate</option>
+                                <option value="PostGraduate">Post Graduate</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="numberOfFamilyMembers">Family Members</label>
+                            <input type="number" id="numberOfFamilyMembers" name="numberOfFamilyMembers" placeholder="Count"
+                                required>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-outline" onclick="nextStep(2)">← Back</button>
+                        <button type="submit" class="btn btn-primary" style="padding: 12px 40px;">Submit All Data ✓</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const editIndex = urlParams.get('edit');
+        const form = document.getElementById('ngoForm');
+        const submitBtn = document.querySelector('.submit-btn');
+
+        // Multi-step Logic
+        function nextStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
+            // Show target step
+            document.getElementById('step' + step).style.display = 'block';
+            
+            // Update Progress Bar
+            const progress = ((step - 1) / 2) * 100;
+            document.getElementById('progressLine').style.width = progress + '%';
+            
+            // Update Indicators
+            document.querySelectorAll('.step-indicator').forEach(ind => {
+                const s = parseInt(ind.getAttribute('data-step'));
+                if (s === step) {
+                    ind.style.borderColor = 'var(--primary)';
+                    ind.style.color = 'var(--primary)';
+                    ind.classList.add('active');
+                } else if (s < step) {
+                    ind.style.borderColor = 'var(--primary)';
+                    ind.style.background = 'var(--primary)';
+                    ind.style.color = '#fff';
+                } else {
+                    ind.style.borderColor = 'var(--border)';
+                    ind.style.background = '#fff';
+                    ind.style.color = 'var(--text-muted)';
+                }
+            });
+        }
+
+        // Pre-fill form if editing
+        if (editIndex !== null) {
+            const data = JSON.parse(localStorage.getItem('ngoData') || '[]');
+            const record = data[editIndex];
+
+            if (record) {
+                document.querySelector('.header h1').innerText = 'Edit Village Data';
+                document.querySelector('.header p').innerText = 'Updating record for ' + record.fullName;
+                submitBtn.innerHTML = '<span>Update Data</span><span>💾</span>';
+
+                // Fill inputs with modern keys and fallbacks for old data
+                const mapping = {
+                    'villageOrPanchayat': record.villageOrPanchayat || record.village,
+                    'wardNumber': record.wardNumber || record.ward,
+                    'houseNameOrNumber': record.houseNameOrNumber || record.address,
+                    'incomeRange': record.incomeRange || record.income,
+                    'educationLevel': record.educationLevel || record.education,
+                    'numberOfFamilyMembers': record.numberOfFamilyMembers || record.family
+                };
+
+                Object.keys(record).forEach(key => {
+                    const input = form.elements[key];
+                    if (input) input.value = record[key];
+                });
+
+                // Apply mapped fallbacks
+                Object.keys(mapping).forEach(key => {
+                    const input = form.elements[key];
+                    if (input && mapping[key]) input.value = mapping[key];
+                });
+            }
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const newData = Object.fromEntries(formData.entries());
+
+            // UI Feedback
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span>Saving to CSV...</span>';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+
+            try {
+                let url = 'http://localhost:3000/api/data';
+                let method = 'POST';
+
+                if (editIndex !== null) {
+                    url += '/' + editIndex;
+                    method = 'PUT';
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newData)
+                });
+
+                if (!response.ok) throw new Error('Server connection failed');
+
+                // Also save to localStorage as backup
+                let existingData = JSON.parse(localStorage.getItem('ngoData') || '[]');
+                if (editIndex !== null) existingData[editIndex] = newData;
+                else existingData.push(newData);
+                localStorage.setItem('ngoData', JSON.stringify(existingData));
+
+                // Show success and hide form elements
+                document.getElementById('success').style.display = 'block';
+                document.querySelector('.card').style.display = 'none';
+                document.querySelector('.header').style.display = 'none'; 
+                
+                const homeBtn = document.createElement('a');
+                homeBtn.href = 'index.html';
+                homeBtn.className = 'btn btn-primary';
+                homeBtn.style.marginTop = '20px';
+                homeBtn.innerHTML = '<span>🏠</span> Return to Dashboard';
+                document.querySelector('.container').appendChild(homeBtn);
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error(error);
+                alert('Error: Could not connect to CSV server. Please make sure server.js is running.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+        });
+    </script>
+</body>
+
+</html>
