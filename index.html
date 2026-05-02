@@ -419,6 +419,9 @@
                                         Respondent Name</th>
                                     <th class="hide-on-mobile"
                                         style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                                        Submission Time</th>
+                                    <th class="hide-on-mobile"
+                                        style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
                                         Village</th>
                                     <th class="hide-on-mobile"
                                         style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
@@ -520,12 +523,17 @@
             [...data].reverse().forEach((item, index) => {
                 const dateObj = item.timestamp ? new Date(item.timestamp) : null;
                 const formattedDate = dateObj ? dateObj.toLocaleDateString() : 'N/A';
+                const formattedTime = dateObj ? dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
                 // Render Table Row (Primary View)
                 const row = document.createElement('tr');
                 row.style.borderBottom = '1px solid #f1f5f9';
                 row.innerHTML = `
                     <td style="padding: 15px 20px; font-weight: 600;">${item.fullName}</td>
+                    <td class="hide-on-mobile" style="padding: 15px 20px;">
+                        <div style="font-weight: 500; color: var(--text-main);">${formattedDate}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${formattedTime}</div>
+                    </td>
                     <td class="hide-on-mobile" style="padding: 15px 20px;">${item.villageOrPanchayat || item.village || 'N/A'}</td>
                     <td class="hide-on-mobile" style="padding: 15px 20px;">${item.occupation}</td>
                     <td class="hide-on-mobile" style="padding: 15px 20px;"><span style="background: #f0fdf4; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${item.incomeRange || item.income}</span></td>
