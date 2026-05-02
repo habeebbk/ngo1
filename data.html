@@ -433,35 +433,29 @@
 
         // Pre-fill form if editing
         if (editIndex !== null) {
-            const data = JSON.parse(localStorage.getItem('ngoData') || '[]');
-            const record = data[editIndex];
+            async function fetchAndFill() {
+                try {
+                    const response = await fetch('/api/data');
+                    const data = await response.json();
+                    // Match by MongoDB _id
+                    const record = data.find(r => r._id === editIndex);
 
-            if (record) {
-                document.querySelector('.header h1').innerText = 'Edit Village Data';
-                document.querySelector('.header p').innerText = 'Updating record for ' + record.fullName;
-                submitBtn.innerHTML = '<span>Update Data</span><span>💾</span>';
+                    if (record) {
+                        document.querySelector('.header h1').innerText = 'Edit Village Data';
+                        document.querySelector('.header p').innerText = 'Updating record for ' + record.fullName;
+                        submitBtn.innerHTML = '<span>Update Data</span><span>💾</span>';
 
-                // Fill inputs with modern keys and fallbacks for old data
-                const mapping = {
-                    'villageOrPanchayat': record.villageOrPanchayat || record.village,
-                    'wardNumber': record.wardNumber || record.ward,
-                    'houseNameOrNumber': record.houseNameOrNumber || record.address,
-                    'incomeRange': record.incomeRange || record.income,
-                    'educationLevel': record.educationLevel || record.education,
-                    'numberOfFamilyMembers': record.numberOfFamilyMembers || record.family
-                };
-
-                Object.keys(record).forEach(key => {
-                    const input = form.elements[key];
-                    if (input) input.value = record[key];
-                });
-
-                // Apply mapped fallbacks
-                Object.keys(mapping).forEach(key => {
-                    const input = form.elements[key];
-                    if (input && mapping[key]) input.value = mapping[key];
-                });
+                        // Fill inputs
+                        Object.keys(record).forEach(key => {
+                            const input = form.elements[key];
+                            if (input) input.value = record[key];
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error fetching record:', error);
+                }
             }
+            fetchAndFill();
         }
 
         form.addEventListener('submit', async function (e) {
@@ -472,7 +466,7 @@
 
             // UI Feedback
             const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span>Saving to CSV...</span>';
+            submitBtn.innerHTML = '<span>Saving to Cloud...</span>';
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
 

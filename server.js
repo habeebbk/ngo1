@@ -1,125 +1,130 @@
 const express = require('express');
-const fs = require('fs');
+const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const CSV_FILE = path.join(__dirname, 'records.csv');
+const MONGO_URI = "mongodb+srv://habeeb:dqfrt9MRTzPGHrtB@cluster0.fh9s8.mongodb.net/ngo1?appName=Cluster0";
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Ensure CSV exists with headers
-if (!fs.existsSync(CSV_FILE)) {
-    const headers = 'fullName,age,gender,villageOrPanchayat,wardNumber,houseNameOrNumber,occupation,incomeRange,educationLevel,numberOfFamilyMembers,timestamp\n';
-    fs.writeFileSync(CSV_FILE, headers);
-}
+// MongoDB Connection
+mongoose.connect(MONGO_URI)
+    .then(() => console.log('Connected to MongoDB Cloud'))
+    .catch(err => console.error('MongoDB Connection Error:', err));
 
-// Get all records (parsing CSV)
-app.get('/api/data', (req, res) => {
+// Schema Definition
+const recordSchema = new mongoose.Schema({
+    fullName: String,
+    age: Number,
+    gender: String,
+    villageOrPanchayat: String,
+    wardNumber: String,
+    houseNameOrNumber: String,
+    occupation: String,
+    incomeRange: String,
+    educationLevel: String,
+    numberOfFamilyMembers: Number,
+    timestamp: { type: Date, default: Date.now }
+});
+
+const Record = mongoose.model('Record', recordSchema);
+
+// API Endpoints
+
+// Get all records
+app.get('/api/data', async (req, res) => {
     try {
-        const content = fs.readFileSync(CSV_FILE, 'utf8');
-        const lines = content.trim().split('\n');
-        const headers = lines[0].split(',');
-        const records = lines.slice(1).map(line => {
-            const values = line.split(',');
-            const obj = {};
-            headers.forEach((header, i) => {
-                obj[header] = values[i];
-            });
-            return obj;
-        });
+        const records = await Record.find().sort({ timestamp: -1 });
         res.json(records);
     } catch (err) {
-        res.status(500).json({ error: 'Failed to read data' });
+        res.status(500).json({ error: 'Failed to fetch data' });
     }
 });
 
-// Save record (Append to CSV)
-app.post('/api/data', (req, res) => {
-    const data = req.body;
-    const values = [
-        data.fullName,
-        data.age,
-        data.gender,
-        data.villageOrPanchayat,
-        data.wardNumber,
-        data.houseNameOrNumber,
-        data.occupation,
-        data.incomeRange,
-        data.educationLevel,
-        data.numberOfFamilyMembers,
-        new Date().toISOString()
-    ];
-
-    // Simple CSV escaping (replace commas with semicolons)
-    const csvLine = values.map(v => String(v).replace(/,/g, ';')).join(',') + '\n';
-
-    fs.appendFileSync(CSV_FILE, csvLine);
-    res.json({ success: true });
+// Save record
+app.post('/api/data', async (req, res) => {
+    try {
+        const newRecord = new Record(req.body);
+        await newRecord.save();
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to save data' });
+    }
 });
 
-// Update record (Rewrite CSV) - Simple implementation
-app.put('/api/data/:index', (req, res) => {
-    const index = parseInt(req.params.index);
-    const newData = req.body;
-    
-    const content = fs.readFileSync(CSV_FILE, 'utf8');
-    const lines = content.trim().split('\n');
-    const headers = lines[0];
-    let records = lines.slice(1);
-
-    if (index >= 0 && index < records.length) {
-        const values = [
-            newData.fullName,
-            newData.age,
-            newData.gender,
-            newData.villageOrPanchayat,
-            newData.wardNumber,
-            newData.houseNameOrNumber,
-            newData.occupation,
-            newData.incomeRange,
-            newData.educationLevel,
-            newData.numberOfFamilyMembers,
-            new Date().toISOString()
-        ];
-        records[index] = values.map(v => String(v).replace(/,/g, ';')).join(',');
-        
-        const newContent = headers + '\n' + records.join('\n') + '\n';
-        fs.writeFileSync(CSV_FILE, newContent);
+// Update record
+app.put('/api/data/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Check if ID is a valid MongoDB ObjectId or an index (for backward compatibility during transition)
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            await Record.findByIdAndUpdate(id, req.body);
+        } else {
+            // Fallback for old index-based requests during the transition period
+            const records = await Record.find().sort({ timestamp: -1 });
+            const recordToUpdate = records[id];
+            if (recordToUpdate) {
+                await Record.findByIdAndUpdate(recordToUpdate._id, req.body);
+            }
+        }
         res.json({ success: true });
-    } else {
-        res.status(404).json({ error: 'Record not found' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update data' });
     }
 });
 
 // Delete record
-app.delete('/api/data/:index', (req, res) => {
-    const index = parseInt(req.params.index);
-    
-    const content = fs.readFileSync(CSV_FILE, 'utf8');
-    const lines = content.trim().split('\n');
-    const headers = lines[0];
-    let records = lines.slice(1);
-
-    if (index >= 0 && index < records.length) {
-        records.splice(index, 1);
-        const newContent = headers + '\n' + records.join('\n') + '\n';
-        fs.writeFileSync(CSV_FILE, newContent);
+app.delete('/api/data/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            await Record.findByIdAndDelete(id);
+        } else {
+            const records = await Record.find().sort({ timestamp: -1 });
+            const recordToDelete = records[id];
+            if (recordToDelete) {
+                await Record.findByIdAndDelete(recordToDelete._id);
+            }
+        }
         res.json({ success: true });
-    } else {
-        res.status(404).json({ error: 'Record not found' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to delete data' });
     }
 });
 
-// Download CSV
-app.get('/api/download', (req, res) => {
-    res.download(CSV_FILE, 'village_data_export.csv');
+// Download CSV (Export from MongoDB)
+app.get('/api/download', async (req, res) => {
+    try {
+        const records = await Record.find().lean();
+        if (records.length === 0) return res.status(404).send('No data to export');
+
+        const headers = 'fullName,age,gender,villageOrPanchayat,wardNumber,houseNameOrNumber,occupation,incomeRange,educationLevel,numberOfFamilyMembers,timestamp\n';
+        const csvRows = records.map(r => [
+            r.fullName,
+            r.age,
+            r.gender,
+            r.villageOrPanchayat,
+            r.wardNumber,
+            r.houseNameOrNumber,
+            r.occupation,
+            r.incomeRange,
+            r.educationLevel,
+            r.numberOfFamilyMembers,
+            r.timestamp.toISOString()
+        ].map(v => String(v).replace(/,/g, ';')).join(',')).join('\n');
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('village_data_export.csv');
+        res.send(headers + csvRows);
+    } catch (err) {
+        res.status(500).send('Export failed');
+    }
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-    console.log(`CSV file being updated at: ${CSV_FILE}`);
+    console.log(`Server running on port ${PORT}`);
 });
