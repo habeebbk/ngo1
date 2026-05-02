@@ -338,18 +338,15 @@
 
 <body>
     <nav
-        style="display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;">
+        style="display: flex; justify-content: center; align-items: center; padding: 15px 40px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;">
         <div class="logo" style="display: flex; flex-direction: column; gap: 2px;">
             <div
                 style="font-weight: 800; font-size: 1.2rem; color: var(--primary); display: flex; align-items: center; gap: 8px;">
-                <span>🌿</span> Village Insights Dashboard
+                <span>🌿</span> Village Connect Portal
             </div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400; padding-left: 28px;">
-                VillageConnect Portal</div>
+
         </div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <a href="data.html" class="btn btn-primary" style="padding: 8px 20px;">+ Add Village Data</a>
-        </div>
+
     </nav>
 
     <main class="dashboard-layout">
@@ -377,10 +374,15 @@
         <div class="main-content">
             <!-- Table View Section -->
             <section>
-                <div class="section-header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
+                <div class="section-header"
+                    style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
                     <div>
                         <h2>Detailed Records View</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Tabular data representation for easy management</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Tabular data representation for easy
+                            management</p>
+                    </div>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <a href="data.html" class="btn btn-primary" style="padding: 8px 20px;">+ Add Village Data</a>
                     </div>
                     <div style="flex: 1; min-width: 300px; position: relative;">
                         <input type="text" id="searchInput" placeholder="Search by name or village..."
@@ -389,18 +391,31 @@
                             style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);">🔍</span>
                     </div>
                 </div>
-                
-                <div style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;">
+
+                <div
+                    style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;">
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
                             <thead>
                                 <tr style="background: #f8fafc; border-bottom: 1px solid var(--border);">
-                                    <th style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Respondent Name</th>
-                                    <th style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Village</th>
-                                    <th style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Occupation</th>
-                                    <th style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Income</th>
-                                    <th style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Family</th>
-                                    <th style="text-align: right; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Actions</th>
+                                    <th
+                                        style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                                        Respondent Name</th>
+                                    <th
+                                        style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                                        Village</th>
+                                    <th
+                                        style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                                        Occupation</th>
+                                    <th
+                                        style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                                        Income</th>
+                                    <th
+                                        style="text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                                        Family</th>
+                                    <th
+                                        style="text-align: right; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                                        Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody">
@@ -478,7 +493,7 @@
 
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
-            
+
             if (data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">No records available</td></tr>';
                 return;
